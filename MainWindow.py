@@ -1,139 +1,302 @@
 # -*- coding: utf-8 -*-
 
-################################################
-#                                              #
-#  Powered By Reverier, XDSEC     2020 03 25   #
-#                                              #
-################################################
+#############################################################
+#                                                           #
+#              Created By Reverier, XDSEC 2020              #
+#                                                           #
+#############################################################
 
-from PyQt5 import QtCore, QtGui, QtWidgets, Qt
-from CryptoPanel import Crypto
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import Qt
+
+from PDFJSPanel.PDFJSPanel import PDFJSPanel
 from ui_Widgets import uni_Widget
+from DIYPanel.DIYPanel import DIYPanel
+from TerminalPanel.TerminalPanel import TerminalPanel
+from BrowserPanel.BrowserPanel import BrowserPanel
+from WikiPanel.WikiPanel import WikiPanel
+from CryptoPanel import CryptoPanel
+from kiwix.KiwixPanel import KiwixPanel
+import psutil
+import time
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        QtGui.QFontDatabase.addApplicationFont('./Resources/wqy-microhei.ttc')
-        # some variables
-        self.TypeMode = 0
-        # define MainWindow
+        QtGui.QFontDatabase.addApplicationFont("./Resources/wqy-microhei.ttc")
+        self.MainWindow = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1600, 900)
-        MainWindow.setMinimumSize(QtCore.QSize(1600, 900))
-        MainWindow.setMaximumSize(QtCore.QSize(1600, 900))
+        self.StatusBar = QtWidgets.QStatusBar()
+        MainWindow.setStatusBar(self.StatusBar)
+        self.StatusBar.setObjectName('StatusBar')
+        self.StatusBar.setStyleSheet(
+            'QWidget{background-color: transparent;}')
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
         MainWindow.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        MainWindow.setStyleSheet(
-            "QWidget#centralwidget{image:url(./Resources/background.png)}")
+        self.MainWindow.setStyleSheet("QMainWindow#MainWindow{\n"
+                                      "background-color: rgb(40, 40, 40);\n"
+                                      "border: 1px grey;\n"
+                                      "border-style: solid;\n"
+                                      "}")
+        self.centralwidget.setObjectName("centralwidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setContentsMargins(1, 1, 1, 1)
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setContentsMargins(10, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.TitleLabel = uni_Widget.ICTFELabel(self.centralwidget)
+        self.TitleLabel.setObjectName("TitleLabel")
+        font = QtGui.QFont()
+        font.setFamily('文泉驿等宽微米黑')
+        font.setPixelSize(16)
+        self.TitleLabel.setFont(font)
+        self.TitleLabel.setText('ICTFE - 集成式CTF解题环境 Version 1.0 Dev')
+        self.horizontalLayout.addWidget(self.TitleLabel)
+        spacerItem = QtWidgets.QSpacerItem(
+            1088, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
 
-        # central widget
-        self.CentralWidget = QtWidgets.QWidget(MainWindow)
-        self.CentralWidget.setStyleSheet("")
-        self.CentralWidget.setObjectName("centralwidget")
-
-        # Close Button
-        self.CloseButton = QtWidgets.QPushButton(self.CentralWidget)
-        self.CloseButton.setGeometry(QtCore.QRect(1544, 2, 54, 32))
-        self.CloseButton.setStyleSheet(
-            "QPushButton#CloseButton{"
-            "image:url(./Resources/close);"
-            "border:none;"
-            "}\n"
-            "QPushButton#CloseButton:hover{"
-            "image:url(./Resources/close1);"
-            "border:none;"
-            "}\n"
-            "QPushButton#CloseButton:pressed{"
-            "image:url(./Resources/close2);"
-            "border:none;"
-            "}")
-        self.CloseButton.setText("")
-        self.CloseButton.setObjectName("CloseButton")
-
-        # Minimize Button
-        self.MiniButton = QtWidgets.QPushButton(self.CentralWidget)
-        self.MiniButton.setGeometry(QtCore.QRect(1490, 2, 54, 32))
-        self.MiniButton.setStyleSheet(
-            "QPushButton#MiniButton{"
-            "image:url(./Resources/mini);"
-            "border:none;"
-            "}\n"
-            "QPushButton#MiniButton:hover{"
-            "image:url(./Resources/mini1);"
-            "border:none;"
-            "}\n"
-            "QPushButton#MiniButton:pressed{"
-            "image:url(./Resources/mini2);"
-            "border:none;"
-            "}")
+        self.MiniButton = QtWidgets.QPushButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.MiniButton.sizePolicy().hasHeightForWidth())
+        self.MiniButton.setSizePolicy(sizePolicy)
+        self.MiniButton.setMinimumSize(QtCore.QSize(54, 32))
+        self.MiniButton.setMaximumSize(QtCore.QSize(54, 32))
+        self.MiniButton.setBaseSize(QtCore.QSize(120, 45))
+        self.MiniButton.setStyleSheet("QPushButton#MiniButton{\n"
+                                      "            image:url(./Resources/mini);\n"
+                                      "            border:none;\n"
+                                      "            }\n"
+                                      "            QPushButton#MiniButton:hover{\n"
+                                      "            image:url(./Resources/mini1);\n"
+                                      "            border:none;\n"
+                                      "            }\n"
+                                      "            QPushButton#MiniButton:pressed{\n"
+                                      "            image:url(./Resources/mini2);\n"
+                                      "            border:none;\n"
+                                      "            }")
         self.MiniButton.setText("")
+        self.MiniButton.setFlat(True)
         self.MiniButton.setObjectName("MiniButton")
-
-        '''Start define Type Change Button'''
-
-        # Reverse Button
-        self.ReverseButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.ReverseButton.setGeometry(QtCore.QRect(24, 150, 120, 45))
+        self.horizontalLayout.addWidget(self.MiniButton)
+        self.MaxButton = QtWidgets.QPushButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.MaxButton.sizePolicy().hasHeightForWidth())
+        self.MaxButton.setSizePolicy(sizePolicy)
+        self.MaxButton.setMinimumSize(QtCore.QSize(54, 32))
+        self.MaxButton.setMaximumSize(QtCore.QSize(54, 32))
+        self.MaxButton.setBaseSize(QtCore.QSize(120, 45))
+        self.MaxButton.setStyleSheet("QPushButton#MaxButton{\n"
+                                     "            image:url(./Resources/max);\n"
+                                     "            border:none;\n"
+                                     "            }\n"
+                                     "            QPushButton#MaxButton:hover{\n"
+                                     "            image:url(./Resources/max1);\n"
+                                     "            border:none;\n"
+                                     "            }\n"
+                                     "            QPushButton#MaxButton:pressed{\n"
+                                     "            image:url(./Resources/max2);\n"
+                                     "            border:none;\n"
+                                     "            }")
+        self.MaxButton.setText("")
+        self.MaxButton.setFlat(True)
+        self.MaxButton.setObjectName("MaxButton")
+        self.horizontalLayout.addWidget(self.MaxButton)
+        self.CloseButton = QtWidgets.QPushButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.CloseButton.sizePolicy().hasHeightForWidth())
+        self.CloseButton.setSizePolicy(sizePolicy)
+        self.CloseButton.setMinimumSize(QtCore.QSize(54, 32))
+        self.CloseButton.setMaximumSize(QtCore.QSize(54, 32))
+        self.CloseButton.setStyleSheet("QPushButton#CloseButton{\n"
+                                       "            image:url(./Resources/close);\n"
+                                       "            border:none;\n"
+                                       "            }\n"
+                                       "            QPushButton#CloseButton:hover{\n"
+                                       "            image:url(./Resources/close1);\n"
+                                       "            border:none;\n"
+                                       "            }\n"
+                                       "            QPushButton#CloseButton:pressed{\n"
+                                       "            image:url(./Resources/close2);\n"
+                                       "            border:none;\n"
+                                       "            }")
+        self.CloseButton.setText("")
+        self.CloseButton.setFlat(True)
+        self.CloseButton.setObjectName("CloseButton")
+        self.horizontalLayout.addWidget(self.CloseButton)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.TabLayout = QtWidgets.QHBoxLayout()
+        self.TabLayout.setContentsMargins(10, 0, 10, 0)
+        self.TabLayout.setSpacing(5)
+        self.TabLayout.setObjectName("TabLayout")
+        self.ReverseButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.ReverseButton.sizePolicy().hasHeightForWidth())
+        self.ReverseButton.setSizePolicy(sizePolicy)
+        self.ReverseButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.ReverseButton.setMaximumSize(QtCore.QSize(120, 45))
         self.ReverseButton.setObjectName("ReverseButton")
-
-        # Web Button
-        self.WebButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.WebButton.setGeometry(QtCore.QRect(24, 215, 120, 45))
+        self.TabLayout.addWidget(self.ReverseButton)
+        self.WebButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.WebButton.sizePolicy().hasHeightForWidth())
+        self.WebButton.setSizePolicy(sizePolicy)
+        self.WebButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.WebButton.setMaximumSize(QtCore.QSize(120, 45))
         self.WebButton.setObjectName("WebButton")
-
-        # Crypto Button
-        self.CryptoButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.CryptoButton.setGeometry(QtCore.QRect(24, 280, 120, 45))
+        self.TabLayout.addWidget(self.WebButton)
+        self.CryptoButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.CryptoButton.sizePolicy().hasHeightForWidth())
+        self.CryptoButton.setSizePolicy(sizePolicy)
+        self.CryptoButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.CryptoButton.setMaximumSize(QtCore.QSize(120, 45))
         self.CryptoButton.setObjectName("CryptoButton")
-
-        # Pwn Button
-        self.PwnButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.PwnButton.setGeometry(QtCore.QRect(24, 345, 120, 45))
+        self.TabLayout.addWidget(self.CryptoButton)
+        self.PwnButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.PwnButton.sizePolicy().hasHeightForWidth())
+        self.PwnButton.setSizePolicy(sizePolicy)
+        self.PwnButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.PwnButton.setMaximumSize(QtCore.QSize(120, 45))
         self.PwnButton.setObjectName("PwnButton")
-
-        # Misc Button
-        self.MiscButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.MiscButton.setGeometry(QtCore.QRect(24, 410, 120, 45))
+        self.TabLayout.addWidget(self.PwnButton)
+        self.MiscButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.MiscButton.sizePolicy().hasHeightForWidth())
+        self.MiscButton.setSizePolicy(sizePolicy)
+        self.MiscButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.MiscButton.setMaximumSize(QtCore.QSize(120, 45))
         self.MiscButton.setObjectName("MiscButton")
-
-        # DIY Button
-        self.DIYButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.DIYButton.setGeometry(QtCore.QRect(24, 475, 120, 45))
+        self.TabLayout.addWidget(self.MiscButton)
+        self.TerminalButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.TerminalButton.sizePolicy().hasHeightForWidth())
+        self.TerminalButton.setSizePolicy(sizePolicy)
+        self.TerminalButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.TerminalButton.setMaximumSize(QtCore.QSize(120, 45))
+        self.TerminalButton.setObjectName("TerminalButton")
+        self.TabLayout.addWidget(self.TerminalButton)
+        self.WikiButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.WikiButton.sizePolicy().hasHeightForWidth())
+        self.WikiButton.setSizePolicy(sizePolicy)
+        self.WikiButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.WikiButton.setMaximumSize(QtCore.QSize(120, 45))
+        self.WikiButton.setObjectName("WikiButton")
+        self.TabLayout.addWidget(self.WikiButton)
+        self.BrowserButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.BrowserButton.sizePolicy().hasHeightForWidth())
+        self.BrowserButton.setSizePolicy(sizePolicy)
+        self.BrowserButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.BrowserButton.setMaximumSize(QtCore.QSize(120, 45))
+        self.BrowserButton.setObjectName("BrowserButton")
+        self.TabLayout.addWidget(self.BrowserButton)
+        self.KiwixButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.KiwixButton.sizePolicy().hasHeightForWidth())
+        self.KiwixButton.setSizePolicy(sizePolicy)
+        self.KiwixButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.KiwixButton.setMaximumSize(QtCore.QSize(120, 45))
+        self.KiwixButton.setObjectName("KiwixButton")
+        self.TabLayout.addWidget(self.KiwixButton)
+        self.DIYButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.DIYButton.sizePolicy().hasHeightForWidth())
+        self.DIYButton.setSizePolicy(sizePolicy)
+        self.DIYButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.DIYButton.setMaximumSize(QtCore.QSize(120, 45))
         self.DIYButton.setObjectName("DIYButton")
+        self.TabLayout.addWidget(self.DIYButton)
+        self.PDFJSButton = uni_Widget.ICTFEButton(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(
+            self.PDFJSButton.sizePolicy().hasHeightForWidth())
+        self.PDFJSButton.setSizePolicy(sizePolicy)
+        self.PDFJSButton.setMinimumSize(QtCore.QSize(120, 45))
+        self.PDFJSButton.setMaximumSize(QtCore.QSize(120, 45))
+        self.PDFJSButton.setObjectName("PDFJSButton")
+        self.TabLayout.addWidget(self.PDFJSButton)
 
-        # Terminal Button
-        self.TerminalButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.TerminalButton.setGeometry(QtCore.QRect(24, 540, 120, 45))
-        self.TerminalButton.setObjectName('TerminalButton')
+        self.SplitterWidget2 = QtWidgets.QWidget(self)
+        self.SplitterWidget2.setMaximumHeight(1)
+        self.SplitterWidget2.setMinimumHeight(1)
+        self.SplitterWidget2.setStyleSheet("QWidget{\n"
+                                           "background-color: grey;\n"
+                                           "border: 1px grey;\n"
+                                           "border-style: solid;\n"
+                                           "}")
+        self.verticalLayout.addWidget(self.SplitterWidget2)
 
-        '''End define Type Change Button'''
+        self.verticalLayout.addLayout(self.TabLayout)
 
-        # File Temp Stack
-        self.FileTempStackTip = uni_Widget.ICTFELabel(self.CentralWidget)
-        self.FileTempStackTip.setGeometry(QtCore.QRect(24, 630, 120, 30))
-        self.FileTempStackTip.setObjectName('FileTempStackTip')
-        self.FileTempStackTip.setText('暂存池')
-        
-        self.FileTempStackDelButton = uni_Widget.ICTFEButton(self.CentralWidget)
-        self.FileTempStackDelButton.setGeometry(QtCore.QRect(114, 632, 30, 30))
-        self.FileTempStackDelButton.setObjectName("FileTempStackDelButton")
-        self.FileTempStackDelButton.setText('×')
-        
-        self.FileTempStack = uni_Widget.ICTFEList(self.CentralWidget)
-        self.FileTempStack.setGeometry(QtCore.QRect(24, 670, 120, 200))
-        self.FileTempStack.setObjectName('FileTempStack')
-
-        '''Begin define Type panel change method'''
-        self.TypeStack = QtWidgets.QStackedWidget(self.CentralWidget)
-        self.TypeStack.setGeometry(QtCore.QRect(170, 130, 1425, 765))
+        self.TypeStack = QtWidgets.QStackedWidget(self.centralwidget)
+        self.TypeStack.setMinimumSize(QtCore.QSize(1000, 600))
+        self.TypeStack.setStyleSheet("QWidget#TypeStack{\n"
+                                     "background-color: transparent;\n"
+                                     "}")
         self.TypeStack.setObjectName("TypeStack")
-
-        # Choose ticker
-        self.TypeChooserBox = [-10, 195, 260, 325, 390, 455, 520, 585]
-        self.TypeChooser = QtWidgets.QLabel(self.CentralWidget)
-        self.TypeChooser.setPixmap(
-            QtGui.QPixmap('./Resources/chooser.png'))
-        self.TypeChooser.setGeometry(QtCore.QRect(
-            24, self.TypeChooserBox[self.TypeMode], 120, 8))
 
         # Reverse Panel
         self.ReversePanel = QtWidgets.QWidget()
@@ -146,7 +309,7 @@ class Ui_MainWindow(object):
         self.TypeStack.addWidget(self.WebPanel)
 
         # Crypto Panel
-        self.CryptoPanel = Crypto.CryptoPanel()
+        self.CryptoPanel = CryptoPanel.CryptoPanel()
         self.CryptoPanel.setObjectName("CryptoPanel")
         self.TypeStack.addWidget(self.CryptoPanel)
 
@@ -161,35 +324,67 @@ class Ui_MainWindow(object):
         self.TypeStack.addWidget(self.MiscPanel)
 
         # DIY Panel
-        self.DIYPanel = QtWidgets.QWidget()
+        self.DIYPanel = DIYPanel()
         self.DIYPanel.setObjectName('DIYPanel')
         self.TypeStack.addWidget(self.DIYPanel)
 
+        # PDFJS Panel
+        self.PDFJSPanel = PDFJSPanel()
+        self.PDFJSPanel.setObjectName('PDFJSPanel')
+        self.TypeStack.addWidget(self.PDFJSPanel)
+
         # Terminal Panel
-        self.TerminalPanel = QtWidgets.QWidget()
+        self.TerminalPanel = TerminalPanel()
         self.TerminalPanel.setObjectName('TerminalPanel')
         self.TypeStack.addWidget(self.TerminalPanel)
+
+        # Browser Panel
+        self.BrowserPanel = BrowserPanel()
+        self.BrowserPanel.setObjectName('BrowserPanel')
+        self.TypeStack.addWidget(self.BrowserPanel)
+
+        # Wiki Panel
+        self.WikiPanel = WikiPanel()
+        self.WikiPanel.setObjectName('WikiPanel')
+        self.TypeStack.addWidget(self.WikiPanel)
+
+        # Wiki Panel
+        self.KiwixPanel = KiwixPanel()
+        self.KiwixPanel.setObjectName('KiwixPanel')
+        self.TypeStack.addWidget(self.KiwixPanel)
 
         # Welcome Panel
         self.WelcomePanel = QtWidgets.QWidget()
         self.WelcomePanel.setObjectName('WelcomePanel')
+        self.WelcomeLabel = QtWidgets.QLabel(self.WelcomePanel)
+        self.WelcomeLabel.setObjectName('WelcomeLabel')
+        self.WelcomeLabel.setGeometry(QtCore.QRect(86, 0, 1428, 768))
+        pixmap = QtGui.QPixmap("./Resources/welcome.png")  # 按指定路径找到图片
+        self.WelcomeLabel.setPixmap(pixmap)  # 在label上显示图片
         self.WelcomePanel.setStyleSheet(
-            'QWidget#WelcomePanel{image:url(./Resources/welcome.png)}')
+            'color: rgb(40, 40, 40);'
+            'background-color: rgb(40, 40, 40);'
+            'border-width: 0px;')
         self.TypeStack.addWidget(self.WelcomePanel)
 
-        self.Contributors = uni_Widget.ICTFELabel(self.WelcomePanel)
-        self.Contributors.setObjectName('Contributors')
-        with open('./Contributors', 'r') as inp:
-            self.Contributors.setText('Contributors: ' + inp.read())
-        self.Contributors.setGeometry(QtCore.QRect(10, 675, 1400, 45))
+        self.SplitterWidget1 = QtWidgets.QWidget(self)
+        self.SplitterWidget1.setMaximumHeight(1)
+        self.SplitterWidget1.setMinimumHeight(1)
+        self.SplitterWidget1.setStyleSheet("QWidget{\n"
+                                           "background-color: grey;\n"
+                                           "border: 1px grey;\n"
+                                           "border-style: solid;\n"
+                                           "}")
+        self.verticalLayout.addWidget(self.SplitterWidget1)
 
-        # Set MainWindow Widget
-        MainWindow.setCentralWidget(self.CentralWidget)
+        self.verticalLayout.addWidget(self.TypeStack)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.MaxFlag = False
 
-        # other process.
         self.retranslateUi(MainWindow)
-        self.CloseButton.clicked.connect(MainWindow.close)
         self.MiniButton.clicked.connect(MainWindow.showMinimized)
+        self.CloseButton.clicked.connect(self.FormClosing)
+        self.MaxButton.clicked.connect(MainWindow.MaximumWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.CryptoButton.clicked.connect(self.ChangeTypeStackCrypto)
         self.ReverseButton.clicked.connect(self.ChangeTypeStackReverse)
@@ -197,109 +392,88 @@ class Ui_MainWindow(object):
         self.WebButton.clicked.connect(self.ChangeTypeStackWeb)
         self.PwnButton.clicked.connect(self.ChangeTypeStackPwn)
         self.DIYButton.clicked.connect(self.ChangeTypeStackDIY)
+        self.PDFJSButton.clicked.connect(self.ChangeTypeStackPDFJS)
+        self.BrowserButton.clicked.connect(self.ChangeTypeStackBrowser)
+        self.WikiButton.clicked.connect(self.ChangeTypeStackWiki)
+        self.KiwixButton.clicked.connect(self.ChangeTypeStackKiwix)
         self.TerminalButton.clicked.connect(self.ChangeTypeStackTerminal)
-
-        self.FileTempStack.doubleClicked.connect(self.FileStackCopy)
-        self.FileTempStackDelButton.clicked.connect(self.DelFileTempStack)
+        self.StatusThread = SystemInfoThread(MainWindow)
+        self.StatusThread.start()
         self.center()
 
-    # functions
+    def MaximumWindow(self):
+        if self.MaxFlag:
+            self.MaxFlag = False
+            self.MainWindow.showNormal()
+        else:
+            self.MaxFlag = True
+            self.MainWindow.showMaximized()
 
-    def DelFileTempStack(self):
-        item = self.FileTempStack.currentItem()
-        self.FileTempStack.takeItem(self.FileTempStack.row(item))
-
-    def FileStackCopy(self):
-        print(self.FileTempStack.selectedItems()[0].text())
-        clipboard = QtGui.QGuiApplication.clipboard()
-        clipboard.setText(self.FileTempStack.selectedItems()[0].text())
+    def setTabButtonColor(self, button):
+        self.CryptoButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.ReverseButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.MiscButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.WebButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.PwnButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.DIYButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.PDFJSButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.BrowserButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.WikiButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.TerminalButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        self.KiwixButton.setStyleSheet(uni_Widget.ButtonStyleNormal)
+        button.setStyleSheet(uni_Widget.ButtonStyleSelected)
 
     def ChangeTypeStackCrypto(self):
         '''改变类型控件组 密码学'''
-        animation = Qt.QPropertyAnimation(self)
-        animation.setTargetObject(self.TypeChooser)
-        animation.setPropertyName(b'pos')
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 3
         self.TypeStack.setCurrentWidget(self.CryptoPanel)
-        self.CryptoPanel.ChangeCryptoBase()
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.CryptoButton)
 
     def ChangeTypeStackReverse(self):
         '''改变类型控件组 逆向'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 1
         self.TypeStack.setCurrentWidget(self.ReversePanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.ReverseButton)
 
     def ChangeTypeStackWeb(self):
         '''改变类型控件组 web'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 2
         self.TypeStack.setCurrentWidget(self.WebPanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.WebButton)
 
     def ChangeTypeStackMisc(self):
         '''改变类型控件组 杂项'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 5
         self.TypeStack.setCurrentWidget(self.MiscPanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.MiscButton)
 
     def ChangeTypeStackPwn(self):
         '''改变类型控件组 pwn'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 4
         self.TypeStack.setCurrentWidget(self.PwnPanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.PwnButton)
 
     def ChangeTypeStackDIY(self):
         '''改变类型控件组 DIY'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 6
         self.TypeStack.setCurrentWidget(self.DIYPanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.DIYButton)
+
+    def ChangeTypeStackPDFJS(self):
+        '''改变类型控件组 PDFJS'''
+        self.TypeStack.setCurrentWidget(self.PDFJSPanel)
+        self.setTabButtonColor(self.PDFJSButton)
 
     def ChangeTypeStackTerminal(self):
         '''改变类型控件组 Terminal'''
-        animation = Qt.QPropertyAnimation(self.TypeChooser, b'pos', self)
-        animation.setStartValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        self.TypeMode = 7
         self.TypeStack.setCurrentWidget(self.TerminalPanel)
-        animation.setEndValue(QtCore.QPoint(
-            24, self.TypeChooserBox[self.TypeMode]))
-        animation.setDuration(200)
-        animation.start()
+        self.setTabButtonColor(self.TerminalButton)
+
+    def ChangeTypeStackBrowser(self):
+        self.TypeStack.setCurrentWidget(self.BrowserPanel)
+        self.setTabButtonColor(self.BrowserButton)
+
+    def ChangeTypeStackWiki(self):
+        self.TypeStack.setCurrentWidget(self.WikiPanel)
+        self.setTabButtonColor(self.WikiButton)
+
+    def ChangeTypeStackKiwix(self):
+        self.TypeStack.setCurrentWidget(self.KiwixPanel)
+        self.setTabButtonColor(self.KiwixButton)
 
     def center(self):
         '''窗口居中显示'''
@@ -308,12 +482,44 @@ class Ui_MainWindow(object):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+    def FormClosing(self):
+        self.StatusThread.exit()
+        self.MainWindow.close()
+
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle("ICTFE")
-        self.CryptoButton.setText("密码编码")
-        self.MiscButton.setText("杂项工具")
-        self.ReverseButton.setText("逆向工程")
-        self.WebButton.setText("Web渗透")
-        self.PwnButton.setText("PWN!")
-        self.DIYButton.setText("启动器")
-        self.TerminalButton.setText('终端集成')
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.ReverseButton.setText(_translate("MainWindow", "逆向工程"))
+        self.WebButton.setText(_translate("MainWindow", "Web渗透"))
+        self.CryptoButton.setText(_translate("MainWindow", "密码编码"))
+        self.PwnButton.setText(_translate("MainWindow", "PWN!"))
+        self.MiscButton.setText(_translate("MainWindow", "杂项工具"))
+        self.TerminalButton.setText(_translate("MainWindow", "数据厨师"))
+        self.WikiButton.setText(_translate("MainWindow", "Wiki"))
+        self.BrowserButton.setText(_translate("MainWindow", "浏览器"))
+        self.KiwixButton.setText(_translate("MainWindow", "Kiwix"))
+        self.DIYButton.setText(_translate("MainWindow", "启动器"))
+        self.PDFJSButton.setText(_translate("MainWindow", "PDF阅读"))
+
+
+class SystemInfoThread(QtCore.QThread):
+
+    def __init__(self, window):
+        super(SystemInfoThread, self).__init__()
+        self.__win = window
+        self.__win.StatusBar.setStyleSheet('QStatusBar{color: white; border: 1px solid grey;}')
+        font = QtGui.QFont()
+        font.setFamily('Consolas')
+        font.setPixelSize(16)
+        self.__win.StatusBar.setFont(font)
+
+    def run(self):
+        old_net_speed = psutil.net_io_counters().bytes_recv
+        while True:
+            new_net_speed = psutil.net_io_counters().bytes_recv
+            time.sleep(1)
+            self.__win.StatusBar.showMessage('  =>>  ICTFE - Version 1.0.0 Dev Build 27061 | Reverier Powered.        ' +
+                                             "NetSpeed: %.2fK/s" % ((new_net_speed - old_net_speed) / 1024)+'      Memory Usage: '+str(
+                                                 int(psutil.virtual_memory().used * 100 / psutil.virtual_memory().total)) + '%' +
+                                             '      CPU Usage: ' + str(psutil.cpu_percent()) + '%')
+            old_net_speed = new_net_speed

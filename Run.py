@@ -17,14 +17,14 @@ class MainWindow(QMainWindow, MainWindow.Ui_MainWindow):
         self.m_flag = False
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.LeftButton and self.MaxFlag is False:
             self.m_flag = True
             self.m_Position = event.globalPos() - self.pos()  # 获取鼠标相对窗口的位置
             event.accept()
             self.setCursor(QCursor(Qt.OpenHandCursor))  # 更改鼠标图标
 
     def mouseMoveEvent(self, QMouseEvent):
-        if Qt.LeftButton and self.m_flag:
+        if Qt.LeftButton and self.m_flag and self.MaxFlag is False:
             self.move(QMouseEvent.globalPos() - self.m_Position)  # 更改窗口位置
             QMouseEvent.accept()
 
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow, MainWindow.Ui_MainWindow):
 
 
 if __name__ == "__main__":
-    #QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     Win = MainWindow()
     Win.setWindowTitle('ICTFE')

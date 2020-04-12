@@ -2,10 +2,49 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 
+ButtonStyleNormal = "QPushButton{" \
+                    "background-color:rgba(40, 40, 40, 100%);" \
+                    "color: white;" \
+                    "border-radius: 0px;" \
+                    "border: 0px groove gray;" \
+                    "border-style: outset;" \
+                    "}" \
+                    "QPushButton:hover{" \
+                    "background-color: rgba(60, 60, 60, 100%);" \
+                    "color: white;" \
+                    "}" \
+                    "QPushButton:pressed{" \
+                    "background-color: rgb(100, 100, 100);" \
+                    "border-style: inset; " \
+                    "}"
+
+ButtonStyleSelected = "QPushButton{" \
+                      "background-color:rgba(40, 140, 255, 100%);" \
+                      "color: white;" \
+                      "border-radius: 0px;" \
+                      "border: 0px groove gray;" \
+                      "border-style: outset;" \
+                      "}" \
+                      "QPushButton:hover{" \
+                      "background-color: rgba(60, 60, 255, 100%);" \
+                      "color: white;" \
+                      "}" \
+                      "QPushButton:pressed{" \
+                      "background-color: rgb(100, 100, 255);" \
+                      "border-style: inset; " \
+                      "}"
+
+
+class ICTFESplitter(QtWidgets.QSplitter):
+    def __init__(self, parent=None):
+        super(ICTFESplitter, self).__init__(parent)
+        self.setStyleSheet("QSplitter::handle { background-color: grey; }")
+
 
 class ICTFEButton(QtWidgets.QPushButton):
     def __init__(self, parent=None):
         super(ICTFEButton, self).__init__(parent)
+        self.setMinimumSize(120, 45)
         font = QtGui.QFont()
         font.setFamily("文泉驿微米黑")
         font.setPixelSize(24)
@@ -62,6 +101,7 @@ class ICTFELineBox(QtWidgets.QLineEdit):
             'padding: 0 8px;'
             'background: rgb(20, 20, 20);'
             'selection-background-color: blue;')
+        self.setDragEnabled(True)
 
 
 class ICTFECheckBox(QtWidgets.QCheckBox):
@@ -94,9 +134,10 @@ class ICTFEList(QtWidgets.QListWidget):
     def __init__(self, parent=None):
         super(ICTFEList, self).__init__(parent)
         self.setStyleSheet(
-            '#FileTempStack{'
-            'background-color: rgb(20,20,20);'
-            'color: white'
+            'QListWidget{'
+            'background-color: rgb(40,40,40);'
+            'border: 1px solid grey;'
+            'color: white;'
             '}')
         font = QtGui.QFont()
         font.setFamily("consolas")
@@ -104,6 +145,11 @@ class ICTFEList(QtWidgets.QListWidget):
         font.setBold(False)
         font.setWeight(50)
         self.setFont(font)
+        self.setDragEnabled(True)
+        self.setDefaultDropAction(Qt.TargetMoveAction)
+
+    def dragEnterEvent(self, e):
+        e.accept()
 
 
 class ICTFEScrollArea(QtWidgets.QScrollArea):
@@ -116,7 +162,7 @@ class ICTFEScrollArea(QtWidgets.QScrollArea):
             '}')
         self.viewport().setStyleSheet(
             'QScrollArea{'
-            'border:none;'
+            'border: none;'
             'background-color:rgb(40,40,40);'
             '}')
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
