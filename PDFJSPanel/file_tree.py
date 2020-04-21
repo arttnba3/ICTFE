@@ -11,7 +11,6 @@ def file_name(path):
     return os.listdir(path)
 
 
-
 class FileTreeItem(QtWidgets.QTreeWidgetItem):
     FilePath = ''
 
@@ -20,6 +19,7 @@ class FileTreeItem(QtWidgets.QTreeWidgetItem):
 
     def setFilePath(self, path):
         self.FilePath = path
+
 
 class Tree(QMainWindow, ui_PDFFileWindow):
     FileDetectedSignal = QtCore.pyqtSignal(FileTreeItem)
@@ -34,10 +34,10 @@ class Tree(QMainWindow, ui_PDFFileWindow):
         font.setPixelSize(20)
         path = './Resources/PDFJS/web'
         self.tree.setFont(font)
-        self.tree.setStyleSheet("QTreeView::item:hover{color: lightgrey; background-color: rgb(60,150,225)}"
-                                "QTreeView::item:selected{color: lightgrey; background-color:rgb(80,130,255)}"
-                                "QTreeView{color: lightgrey; background-color: rgb(40, 40, 40)}"
-                                "QHeaderView::section{color: lightgrey; background-color: rgb(40, 40, 40);}")
+        self.tree.setStyleSheet("QTreeView::item:hover{color: lightgrey; background-color: rgb(50,50,50)}"
+                                "QTreeView::item:selected{color: lightgrey; background-color:rgb(80,110,205)}"
+                                "QTreeView{color: lightgrey; background-color: rgb(30, 30, 30)}"
+                                "QHeaderView::section{color: lightgrey; background-color: rgb(30, 30, 30);}")
         self.tree.setColumnCount(1)
         self.tree.setColumnWidth(0, 50)
         self.tree.setHeaderLabels(["书籍列表"])
@@ -70,10 +70,10 @@ class Tree(QMainWindow, ui_PDFFileWindow):
         self.tree.setHeaderLabels(["书籍列表"])
         self.tree.setIconSize(Qt.QSize(25, 25))
         self.tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.tree.setStyleSheet("QTreeView::item:hover{color: lightgrey; background-color: rgb(60,150,225)}"
-                                "QTreeView::item:selected{color: lightgrey; background-color:rgb(80,130,255)}"
-                                "QTreeView{color: lightgrey; background-color: rgb(40, 40, 40)}"
-                                "QHeaderView::section{color: lightgrey; background-color: rgb(40, 40, 40);}")
+        self.tree.setStyleSheet("QTreeView::item:hover{color: lightgrey; background-color: rgb(50,50,50)}"
+                                "QTreeView::item:selected{color: lightgrey; background-color:rgb(80,110,205)}"
+                                "QTreeView{color: lightgrey; background-color: rgb(30, 30, 30)}"
+                                "QHeaderView::section{color: lightgrey; background-color: rgb(30, 30, 30);}")
         self.tree.doubleClicked.connect(lambda x: self.EmitFilePath(self.tree.itemFromIndex(x)))
 
         dirs = file_name(path)
