@@ -1,20 +1,18 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor
 
 ButtonStyleNormal = "QPushButton{" \
-                    "background-color:rgba(30, 30, 30, 100%);" \
+                    "background-color:rgb(30, 30, 30);" \
                     "color: white;" \
                     "border-radius: 0px;" \
                     "border: 0px groove gray;" \
                     "border-style: outset;" \
                     "}" \
                     "QPushButton:hover{" \
-                    "background-color: rgba(50, 50, 50, 100%);" \
+                    "background-color: rgba(30, 30, 30, 100%);" \
                     "color: white;" \
                     "}" \
                     "QPushButton:pressed{" \
-                    "background-color: rgb(80, 80, 80);" \
+                    "background-color: rgb(40, 40, 40);" \
                     "border-style: inset; " \
                     "}"
 
@@ -122,7 +120,7 @@ class ICTFESplitter(QtWidgets.QSplitter):
     def __init__(self, parent=None):
         super(ICTFESplitter, self).__init__(parent)
         self.setStyleSheet("QSplitter::handle {"
-                           "background-color: rgb(50, 50, 50);"
+                           "background-color: rgb(30, 30, 30);"
                            "}"
                            "QSplitter::handle:horizontal {"
                            "width: 3px;"
@@ -148,22 +146,7 @@ class ICTFEButton(QtWidgets.QPushButton):
         font.setBold(False)
         font.setWeight(50)
         self.setFont(font)
-        self.setStyleSheet(
-            "QPushButton{"
-            "background-color:rgba(30, 30, 30, 100%);"
-            "color: white;"
-            "border-radius: 0px;"
-            "border: 0px groove gray;"
-            "border-style: outset;"
-            "}"
-            "QPushButton:hover{"
-            "background-color: rgba(50, 50, 50, 100%);"
-            "color: white;"
-            "}"
-            "QPushButton:pressed{"
-            "background-color: rgb(80, 80, 80);"
-            "border-style: inset; "
-            "}")
+        self.setStyleSheet(RPushButtonDarkStyle)
 
 
 class ICTFETextBox(QtWidgets.QTextEdit):
@@ -175,7 +158,7 @@ class ICTFETextBox(QtWidgets.QTextEdit):
         font.setBold(False)
         font.setWeight(50)
         self.setFont(font)
-        self.setStyleSheet('background-color: rgb(20,20,20); color: rgb(200, 200, 200);')
+        self.setStyleSheet('QTextEdit{background-color: rgb(20,20,20); color: rgb(200, 200, 200);}'+ScrollBarStyle)
         self.setTextColor(QtGui.QColor(200, 200, 200))
         self.setAcceptDrops(True)
         self.setAcceptRichText(False)
@@ -195,7 +178,7 @@ class ICTFELineBox(QtWidgets.QLineEdit):
             'border: 2px solid gray;'
             'border-radius: 2px;'
             'padding: 0 4px;'
-            'background: rgb(20, 20, 20);'
+            'background: rgb(30, 30, 30);'
             'selection-background-color: blue;')
         self.setDragEnabled(True)
 
@@ -223,7 +206,7 @@ class ICTFELabel(QtWidgets.QLabel):
         font.setBold(False)
         font.setWeight(50)
         self.setFont(font)
-        self.setStyleSheet('color: white;')
+        self.setStyleSheet('color: white; background-color: rgb(30, 30, 30);')
 
 
 class ICTFEList(QtWidgets.QListWidget):
@@ -232,7 +215,7 @@ class ICTFEList(QtWidgets.QListWidget):
         self.setStyleSheet(
             'QListWidget{'
             'background-color: rgb(30, 30, 30);'
-            'border: 1px solid grey;'
+            'border: 1px solid rgb(50, 50, 50);'
             'color: white;'
             '}')
         font = QtGui.QFont()
@@ -242,7 +225,7 @@ class ICTFEList(QtWidgets.QListWidget):
         font.setWeight(50)
         self.setFont(font)
         self.setDragEnabled(True)
-        self.setDefaultDropAction(Qt.TargetMoveAction)
+        self.setDefaultDropAction(QtCore.Qt.TargetMoveAction)
 
     def dragEnterEvent(self, e):
         e.accept()
@@ -272,21 +255,240 @@ class PropertiesEditWidget(QtWidgets.QListWidget):
 
 class BoolEditItem(QtWidgets.QWidget):
     def __init__(self, parent=None, name: str = ''):
-        super().__init__(parent=parent)
+        super().__init__(parent=parent, flags=QtCore.Qt.WindowFlags())
         layout = QtWidgets.QVBoxLayout()
         check = ICTFECheckBox()
         check.setText(name)
-        layout.addWidget(check)
+        layout.addWidget(check, alignment=QtCore.Qt.Alignment())
         self.setLayout(layout)
 
 
 class LineEditItem(QtWidgets.QWidget):
     def __init__(self, parent=None, name: str = ''):
-        super().__init__(parent=parent)
+        super().__init__(parent=parent, flags=QtCore.Qt.WindowFlags())
         layout = QtWidgets.QHBoxLayout()
         label = ICTFELabel()
         label.setText(name)
-        layout.addWidget(label)
+        layout.addWidget(label, alignment=QtCore.Qt.Alignment())
         editbox = ICTFELineBox()
-        layout.addWidget(editbox)
+        layout.addWidget(editbox, alignment=QtCore.Qt.Alignment())
         self.setLayout(layout)
+
+
+DockStyleSheet = '''
+QDockWidget {
+    border: 1px solid rgb(50, 50, 50);
+    titlebar-close-icon: url(./Resources/closeDock.png);
+    titlebar-normal-icon: url(./Resources/maxDock.png);
+}
+
+QDockWidget::title {
+    text-align: left;
+    background: rgb(60, 60, 60);
+    min-height: 24px;
+}
+
+QDockWidget::close-button, QDockWidget::float-button {
+    border: none;
+    background: transparent;
+    icon-size: 24px;
+    padding: 0px;
+}
+
+QDockWidget::close-button:hover {
+    background: rgb(250, 50, 50);
+}
+
+QDockWidget::float-button:hover {
+    background: rgb(100, 100, 100);
+}
+
+QDockWidget::close-button:pressed{
+    background: rgb(200, 100, 100);
+}
+
+QDockWidget::float-button:pressed {
+    background: rgb(80, 80, 80);
+}
+'''
+
+TabStyle = '''
+QMainWindow::separator {
+    background: rgb(30, 30, 30);
+    width: 3px; /* when vertical */
+    height: 3px; /* when horizontal */
+}
+QMainWindow::separator:hover {
+    background: rgb(50, 150, 250);
+    width: 3px; /* when vertical */
+    height: 3px; /* when horizontal */
+}
+QTabWidget::tab-bar {
+alignment:left;
+top:0px;
+left:0px;
+right:0px;
+}
+QTabBar::tab {
+border-color: white;
+border-width: 0px;
+border-bottom: none;
+border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+min-width:60px;
+min-height:20px;
+margin 2px 2px 2px 2px;
+}
+QTabBar::tab:selected{
+background: rgb(60, 60, 60);
+color: rgb(250, 100, 100);
+}
+QTabBar::tab:!selected{
+background: rgb(40, 40, 40);
+color: white;
+border-top: 0px solid rgb(40, 40, 40);
+}
+QTabBar::tab:hover{
+background:rgb(80, 80, 80);
+}
+'''
+ScrollBarStyle ='''
+QScrollBar:vertical {
+     border: 0px solid grey;
+     background: #1e1e1e;
+     width: 15px;
+     margin: 1px 0 1px 0;
+ }
+ QScrollBar::handle:vertical:hover {
+     border: 5px solid #454545;
+     background: #454545;
+     width: 15px;
+     border-radius: 7px;
+ }
+ QScrollBar::handle:vertical {
+     border: 5px solid #353535;
+     background: #353535;
+     min-height: 20px;
+     border-radius: 7px;
+ }
+ QScrollBar::add-line:vertical {
+     border: 0px solid grey;
+     background: #1e1e1e;
+     height: 2px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     border: 0px solid grey;
+     background: #1e1e1e;
+     height: 2px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+     background: none;
+ }
+
+
+ QScrollBar:horizontal {
+    border: 0px solid grey;
+    background: #1e1e1e;
+    height: 15px;
+    margin: 0px 1px 0px 1px;
+}
+QScrollBar::handle:horizontal {
+    background: #353535;
+    min-width: 20px;
+    border: 5px solid #353535;
+    border-radius: 7px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: #454545;
+    border: 5px solid #454545;
+    min-width: 20px;
+    border-radius: 7px;
+}
+QScrollBar::add-line:horizontal {
+    border: 0px solid grey;
+    background: #1e1e1e;
+    width: 2px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+    border: 0px solid grey;
+    background: #1e1e1e;
+    width: 2px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+'''
+RMenuButtonDarkStyle = '''
+QPushButton{
+    background-color: transparent;
+    color: white;
+    font: 18px;
+    border-radius: 0px;
+    border: 0px solid rgb(40, 40, 40);
+}
+QPushButton:hover{
+    background-color: rgb(50, 90, 150);
+}
+QPushButton:pressed{
+    background-color: rgb(80, 140, 250);
+}
+'''
+
+RMenuButtonLightStyle = '''
+QPushButton{
+    background-color: transparent;
+    color: black;
+    font: 18px;
+    border-radius: 0px;
+    border: 0px solid rgb(40, 40, 40);
+}
+QPushButton:hover{
+    background-color: rgb(50, 50, 220);
+}
+QPushButton:pressed{
+    background-color: rgb(70, 70, 250);
+}
+'''
+
+RPushButtonDarkStyle = '''
+QPushButton{
+    background-color: rgb(40, 40, 40);
+    color: white;
+    font: 18px;
+    border-radius: 20px;
+    border: 3px solid rgb(40, 40, 40);
+}
+QPushButton:hover{
+    background-color: rgb(50, 90, 150);
+    border: 3px solid rgb(50, 90, 150);
+}
+QPushButton:pressed{
+    background-color: rgb(80, 140, 250);
+    border: 3px solid rgb(80, 140, 250);
+}
+'''
+
+RPushButtonLightStyle = '''
+QPushButton{
+    background-color: rgb(80, 120, 255);
+    color: black;
+    font: 18px;
+    border-radius: 20px;
+    border: 3px solid rgb(80, 120, 255);
+}
+QPushButton:hover{
+    background-color: rgb(50, 50, 220);
+    border: 3px solid rgb(50, 50, 220);
+}
+QPushButton:pressed{
+    background-color: rgb(70, 70, 250);
+    border: 3px solid rgb(70, 70, 250);
+}
+'''

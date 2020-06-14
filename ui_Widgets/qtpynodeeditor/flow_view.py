@@ -10,6 +10,8 @@ from qtpy.QtWidgets import (QAction, QGraphicsView, QLineEdit, QMenu,
 from .connection_graphics_object import ConnectionGraphicsObject
 from .flow_scene import FlowScene
 from .node_graphics_object import NodeGraphicsObject
+from PyQt5.Qt import QApplication
+from PyQt5.QtGui import QCursor
 
 logger = logging.getLogger(__name__)
 
@@ -217,16 +219,20 @@ class FlowView(QGraphicsView):
         ----------
         event : QWheelEvent
         """
-        delta = event.angleDelta()
-        if delta.y() == 0:
-            event.ignore()
-            return
 
-        d = delta.y() / abs(delta.y())
-        if d > 0.0:
-            self.scale_up()
+        if QApplication.keyboardModifiers() == Qt.ControlModifier:
+            delta = event.angleDelta()
+            if delta.y() == 0:
+                event.ignore()
+                return
+
+            d = delta.y() / abs(delta.y())
+            if d > 0.0:
+                self.scale_up()
+            else:
+                self.scale_down()
         else:
-            self.scale_down()
+            super().wheelEvent(event)
 
     def keyPressEvent(self, event: QKeyEvent):
         """

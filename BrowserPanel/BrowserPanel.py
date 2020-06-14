@@ -1,22 +1,20 @@
-import datetime
+__AUTHOR__ = 'Reverier Xu'
+
 import os
+import platform
+import re
 
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineDownloadItem, QWebEngineSettings
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
+from PyQt5.QtWidgets import *
+
 from ui_Widgets import uni_Widget
-import sys
-import socket
-import re
-import platform
-import requests
-import sys
 
 
 class BrowserPanel(QWidget):
     def __init__(self, parent=None):
-        super(BrowserPanel, self).__init__(parent)
+        super(BrowserPanel, self).__init__(parent, flags=Qt.WindowFlags())
         self.MainBrowser = BrowserWindow(self)
         self.Layouts = QHBoxLayout(self)
         self.Layouts.addWidget(self.MainBrowser)
@@ -64,7 +62,7 @@ class BrowserTab(QMainWindow):
         self.navigation_bar.setIconSize(QSize(18, 18))
         self.navigation_bar.setMaximumHeight(35)
         self.navigation_bar.setContentsMargins(1, -1, 1, -1)
-        self.navigation_bar.setStyleSheet('QToolBar{border: 1px solid grey;}')
+        self.navigation_bar.setStyleSheet('QToolBar{border: 1px solid rgb(50, 50, 50);}')
         self.addToolBar(self.navigation_bar)
         osinfo = platform.system()
         if osinfo == 'Windows':
@@ -73,16 +71,16 @@ class BrowserTab(QMainWindow):
             self.browser.settings().setFontFamily(QWebEngineSettings.SerifFont, '微软雅黑')
             self.browser.settings().setFontFamily(QWebEngineSettings.SansSerifFont, '微软雅黑')
             self.browser.settings().setFontFamily(QWebEngineSettings.CursiveFont, '微软雅黑')
-        self.back_button = QAction(QIcon('Assets/back.png'), '后退', self)
-        self.next_button = QAction(QIcon('Assets/forward.png'), '前进', self)
-        self.stop_button = QAction(QIcon('Assets/stop.png'), '停止', self)
-        self.refresh_button = QAction(QIcon('Assets/refresh.png'), '刷新', self)
-        self.home_button = QAction(QIcon('Assets/home.png'), '主页', self)
-        self.enter_button = QAction(QIcon('Assets/enter.png'), '转到', self)
-        self.add_button = QAction(QIcon('Assets/new.png'), '新建标签页', self)
+        self.back_button = QAction(QIcon('Resources/Assets/back.png'), '后退', self)
+        self.next_button = QAction(QIcon('Resources/Assets/forward.png'), '前进', self)
+        self.stop_button = QAction(QIcon('Resources/Assets/stop.png'), '停止', self)
+        self.refresh_button = QAction(QIcon('Resources/Assets/refresh.png'), '刷新', self)
+        self.home_button = QAction(QIcon('Resources/Assets/home.png'), '主页', self)
+        self.enter_button = QAction(QIcon('Resources/Assets/enter.png'), '转到', self)
+        self.add_button = QAction(QIcon('Resources/Assets/new.png'), '新建标签页', self)
         self.ssl_label1 = QLabel(self)
         self.ssl_label1.setPixmap(
-            QPixmap("Assets/main.png").scaledToHeight(18))
+            QPixmap("Resources/Assets/main.png").scaledToHeight(18))
         self.ssl_label2 = QLabel(self)
         self.ssl_label2.setText(" 欢迎来到ICTFE ")
         self.ssl_label2.setStyleSheet("color:white;")
@@ -94,7 +92,7 @@ class BrowserTab(QMainWindow):
             'border: 1px solid gray;'
             'border-radius: 0px;'
             'padding: 0 0px;'
-            'background: rgb(20, 20, 20);'
+            'background: rgb(30, 30, 30);'
             'selection-background-color: blue;'
             'font: 18px;')
         self.navigation_bar.addAction(self.back_button)
@@ -122,13 +120,11 @@ class BrowserTab(QMainWindow):
         s = QUrl(self.url_text_bar.text())
         if s.scheme() == '':
             s.setScheme('http')
-        if re.match(
-                '((http|ftp|https)://)?(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?',
+        if re.match('((http|ftp|https)://)?(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?',
                 self.url_text_bar.text()) != None or self.url_text_bar.text()[:4] == 'file':
             self.browser.load(s)
         else:
-            s = QUrl('https://cn.bing.com/search?q=' +
-                     self.url_text_bar.text())
+            s = QUrl('https://cn.bing.com/search?q=' + self.url_text_bar.text())
             self.browser.load(s)
         self.browser.setZoomFactor(1.2)
 
@@ -153,6 +149,10 @@ class BrowserTab(QMainWindow):
             self.ssl_label2.setText(" 安全 ")
             self.ssl_label2.setStyleSheet("color:green;")
         self.url_text_bar.setText(s.toString())
+        pwd = os.getcwd()
+        pwd = pwd.replace('\\', '/')
+        if s.toString().count('/Resources/Search/Search.html')!=0:
+            self.url_text_bar.setText('Home Page~')
         self.url_text_bar.setCursorPosition(0)
 
 
@@ -162,23 +162,23 @@ class BrowserWindow(QWidget):
         super().__init__(parent)
         self.tabs = QTabWidget(self)
         self.tabs.setStyleSheet('''
-QTabWidget::pane {
-  border: 1px solid rgb(30, 30, 30);
-  top:0px;
-  background: rgb(30, 30, 30);
-}
+                                QTabWidget::pane {
+                                  border: 1px solid rgb(30, 30, 30);
+                                  top:0px;
+                                  background: rgb(30, 30, 30);
+                                }
 
-QTabBar::tab {
-  background: rgb(30, 30, 30);
-  color: white;
-  border: 1px solid rgb(30, 30, 30);
-  padding: 1px;
-}
+                                QTabBar::tab {
+                                  background: rgb(30, 30, 30);
+                                  color: white;
+                                  border: 1px solid rgb(30, 30, 30);
+                                  padding: 1px;
+                                }
 
-QTabBar::tab:selected {
-  background: rgb(40, 100, 245);
-  margin-bottom: 0px;
-}''')
+                                QTabBar::tab:selected {
+                                  background: rgb(40, 100, 245);
+                                  margin-bottom: 0px;
+                                }''')
         self.Layouts = QHBoxLayout(self)
         self.Layouts.addWidget(self.tabs)
         self.Layouts.setSpacing(0)

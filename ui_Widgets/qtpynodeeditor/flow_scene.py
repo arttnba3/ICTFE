@@ -3,7 +3,7 @@ import json
 import os
 
 from qtpy.QtCore import QDir, QPoint, QPointF, Qt, Signal
-from qtpy.QtWidgets import QFileDialog, QGraphicsScene
+from PyQt5.QtWidgets import QFileDialog, QGraphicsScene
 
 from . import exceptions
 from . import style as style_module
@@ -15,6 +15,7 @@ from .node_data import NodeDataModel, NodeDataType
 from .node_graphics_object import NodeGraphicsObject
 from .port import Port, PortType
 from .type_converter import DefaultTypeConverter, TypeConverter
+from Config import Settings
 
 
 def locate_node_at(scene_point, scene, view_transform):
@@ -110,22 +111,21 @@ class FlowSceneModel:
     def save(self, file_name=None):
         if file_name is None:
             file_name, _ = QFileDialog.getSaveFileName(
-                None, "Save Flow Scene", QDir.homePath(),
-                "Flow Scene Files (*.flow)")
+                None, "保存当前状态", Settings.GlobalPath,
+                "数据流状态文件 (*.rxf)")
 
         if file_name:
             file_name = str(file_name)
-            if not file_name.endswith(".flow"):
-                file_name += ".flow"
-
+            if file_name[-4:] != '.rxf':
+                file_name += '.rxf'
             with open(file_name, 'wt') as f:
                 json.dump(self.__getstate__(), f)
 
     def load(self, file_name=None):
         if file_name is None:
             file_name, _ = QFileDialog.getOpenFileName(
-                None, "Open Flow Scene", QDir.homePath(),
-                "Flow Scene Files (*.flow)")
+                None, "打开数据流状态文件", Settings.GlobalPath,
+                "数据流状态文件 (*.rxf)")
 
         if not os.path.exists(file_name):
             return
